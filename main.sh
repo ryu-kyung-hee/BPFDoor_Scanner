@@ -18,6 +18,7 @@ LOG_FILE="${HOSTNAME}_${OS_VERSION}_$(date +%Y%m%d%H%M%S)_bpfscan.log"
 
 # 점검 모듈 로딩
 source "$SCRIPT_DIR/modules/env_check.sh"
+source "$SCRIPT_DIR/modules/preload_check.sh"
 source "$SCRIPT_DIR/modules/hash_check.sh"
 source "$SCRIPT_DIR/modules/proc_check.sh"
 source "$SCRIPT_DIR/modules/net_check.sh"
@@ -30,6 +31,7 @@ gen_log() {
 
 # 점검 항목별 실행 플래그
 run_env=false
+run_preload=false
 run_hash=false
 run_proc=false
 run_net=false
@@ -37,6 +39,7 @@ run_net=false
 # 인자 없이 실행 → 전체 점검
 if [ $# -eq 0 ]; then
     run_env=true
+    run_preload=true
     run_hash=true
     run_proc=true
     run_net=true
@@ -44,12 +47,14 @@ else
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --env) run_env=true ;;
+            --preload) run_preload=true ;;
             --hash) run_hash=true ;;
             --proc) run_proc=true ;;
             --net) run_net=true ;;
             --help|-h)
                 echo "사용법: $0 [옵션]"
                 echo "  --env      환경 변수 점검"
+		echo "  --preload  LD_PRELOAD 값 점검"
                 echo "  --hash     악성 해시 점검"
                 echo "  --proc     의심 프로세스 점검"
                 echo "  --net      네트워크 연결/소켓 점검"
@@ -70,6 +75,7 @@ fi
 gen_log "========== 스캔 시작 =========="
 
 $run_env && { gen_log "[*] 환경 변수 점검 시작"; check_bpfdoor_env_vars; }
+$run_preload && { gen_log "[*] LD_PRELOAD 점검 시작"; check_ld_preload; }
 $run_hash && { gen_log "[*] 파일 해시 점검 시작"; check_files_by_hash; }
 $run_proc && { gen_log "[*] 의심 프로세스 점검 시작"; check_suspicious_processes_and_files; }
 $run_net && { gen_log "[*] 네트워크 점검 시작"; check_network_sockets; }
