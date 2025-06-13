@@ -11,6 +11,7 @@ check_suspicious_strings() {
     local SEARCH_PATHS=(
     "/dev/shm/" "/tmp" "/var/tmp" "/bin/" "/sbin/" "/usr/bin/"
     "/usr/local/bin/" "/usr/local/sbin/" "/etc/" "/run/" "/root/" "/home/"
+    )
     
 for path in "${SEARCH_PATHS[@]}"; do
     if [ ! -d "$path" ]; then
@@ -21,7 +22,7 @@ for path in "${SEARCH_PATHS[@]}"; do
     find "$path" -type f -print0 2>/dev/null | while IFS= read -r -d $'\0' file; do
     for str in "${SUSPICIOUS_STRINGS[@]}"; do
         if grep -q -a -F -- "$str" "$file"; then
-        gen_log "CRITICAL: 의심문자열'${str}'이(가) 파일 '${file}'에서 발견되었습니다.
+        gen_log "CRITICAL: 의심문자열'${str}'이(가) 파일 '${file}'에서 발견되었습니다."
         break
       fi
     done
