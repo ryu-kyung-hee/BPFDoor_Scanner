@@ -13,9 +13,11 @@ check_suspicious_strings() {
     "/usr/local/bin/" "/usr/local/sbin/" "/etc/" "/run/" "/root/" "/home/"
     )
     
+    local found_count=0
+    
 for path in "${SEARCH_PATHS[@]}"; do
     if [ ! -d "$path" ]; then
-        echo "WARN: 검색 경로를 찾을 수 없습니다: $path"
+        gen_log "WARN: 검색 경로를 찾을 수 없습니다: $path"
         continue
     fi
 
@@ -23,6 +25,7 @@ for path in "${SEARCH_PATHS[@]}"; do
     for str in "${SUSPICIOUS_STRINGS[@]}"; do
         if grep -q -a -F -- "$str" "$file"; then
         gen_log "CRITICAL: 의심문자열'${str}'이(가) 파일 '${file}'에서 발견되었습니다."
+        ((found_count++))
         break
       fi
     done
