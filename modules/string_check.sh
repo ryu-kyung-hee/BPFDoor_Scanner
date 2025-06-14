@@ -1,6 +1,6 @@
 #!/bin/bash
 
-check_suspicious_strings() {
+check_malicious_strings() {
     gen_log "INFO: 바이너리 파일 내에 의심스러운 문자열 검사 시작"
     local SUSPICIOUS_STRINGS=(
         "dev/ptm"
