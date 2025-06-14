@@ -3,21 +3,21 @@
 check_process_masquerading() {
     gen_log "INFO: 위장 프로세스 확인 중"
     local found_masquerade=false
+    local comm_name exe_name
 
     for pid in $(ps -eo pid --no-headers); do
         if [ ! -d "/proc/$pid" ]; then
             continue
         fi
 
-    local comm_name exe_name
-    comm_name=$(cat "/proc/$pid/comm" 2>dev/null
-    exe_name=$(basename "$(readlink -f "/proc/$pid/exe") 2>/dev/null)
+    comm_name=$(cat "/proc/$pid/comm" 2>/dev/null)
+    exe_name="$(readlink -f "/proc/$pid/exe" 2>/dev/null | xargs basename)"
 
     if [[ -n "$exe_name" && "$comm_name" != "$exe_name" ]]; then
         gen_log "WARN: 프로세스명 불일치 탐지"
         gen_log " -> In-Memory Name : $comm_name"
         gen_log " -> Executable File : $exe_name"
-        gen_log " -> Full Command: $(cat /proc/$lid/cmdline | tr -d "\0')
+        gen_log " -> Full Command: \"$(cat /proc/$pid/cmdline | tr -d '\0')""
         found_masquerade=true
     fi
   done
