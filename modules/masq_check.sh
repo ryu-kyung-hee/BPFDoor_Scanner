@@ -32,6 +32,3 @@ if [ "$found_masquerade" = false ]; then
     echo "INFO: 위장 프로세스가 발견되지 않음."
 fi
 }
-
-check_process_masquerading
-echo "위장 프로세스 검사가 종료됨."
