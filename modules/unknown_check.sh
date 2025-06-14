@@ -21,4 +21,3 @@ check_unknown_BPF () {
 }
 
 check_unknown_BPF
-echo "UNKNOWN BPF 아티팩트 확인 완료"
