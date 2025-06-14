@@ -17,7 +17,7 @@ check_process_masquerading() {
         gen_log "WARN: 프로세스명 불일치 탐지"
         gen_log " -> In-Memory Name : $comm_name"
         gen_log " -> Executable File : $exe_name"
-        gen_log " -> Full Command: \"$(cat /proc/$pid/cmdline | tr -d '\0')""
+        gen_log " -> Full Command: $(cat /proc/$pid/cmdline | tr -d '\0')"
         found_masquerade=true
     fi
   done
