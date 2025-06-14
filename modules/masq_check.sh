@@ -27,4 +27,4 @@ if [ "$found_masquerade" = false ]; then
 fi
 }
 
-ehco "위장 프로세스 검사가 종료됨."
+echo "위장 프로세스 검사가 종료됨."
