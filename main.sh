@@ -22,6 +22,9 @@ source "$SCRIPT_DIR/modules/preload_check.sh"
 source "$SCRIPT_DIR/modules/hash_check.sh"
 source "$SCRIPT_DIR/modules/proc_check.sh"
 source "$SCRIPT_DIR/modules/net_check.sh"
+source "$SCRIPT_DIR/modules/masquerade_check.sh"
+source "$SCRIPT_DIR/modules/unknown_bpf_check.sh"
+source "$SCRIPT_DIR/modules/string_check.sh"
 
 # 로그 출력 함수
 gen_log() {
@@ -35,6 +38,9 @@ run_preload=false
 run_hash=false
 run_proc=false
 run_net=false
+run_masq=false
+run_unknown=false
+run_string=false
 
 # 인자 없이 실행 → 전체 점검
 if [ $# -eq 0 ]; then
@@ -43,6 +49,9 @@ if [ $# -eq 0 ]; then
     run_hash=true
     run_proc=true
     run_net=true
+    run_masq=true
+    run_unknown=true
+    run_string=true
 else
     while [[ $# -gt 0 ]]; do
         case "$1" in
@@ -51,6 +60,9 @@ else
             --hash) run_hash=true ;;
             --proc) run_proc=true ;;
             --net) run_net=true ;;
+	    --masq) run_masq=true ;;
+            --unknown) run_unknown=true ;;
+            --string) run_string=true ;;
             --help|-h)
                 echo "사용법: $0 [옵션]"
                 echo "  --env      환경 변수 점검"
@@ -58,6 +70,9 @@ else
                 echo "  --hash     악성 해시 점검"
                 echo "  --proc     의심 프로세스 점검"
                 echo "  --net      네트워크 연결/소켓 점검"
+		echo "  --masq     프로세스 위장 점검"
+                echo "  --unknown  이름 없는 BPF 아티팩트 점검"
+                echo "  --string   문자열 기반 이상 탐지 점검"
                 echo "  (옵션 없으면 전체 점검 수행)"
                 exit 0
                 ;;
@@ -79,6 +94,9 @@ $run_preload && { gen_log "[*] LD_PRELOAD 점검 시작"; check_ld_preload; }
 $run_hash && { gen_log "[*] 파일 해시 점검 시작"; check_files_by_hash; }
 $run_proc && { gen_log "[*] 의심 프로세스 점검 시작"; check_suspicious_processes_and_files; }
 $run_net && { gen_log "[*] 네트워크 점검 시작"; check_network_sockets; }
+$run_masq && { gen_log "[*] 위장 프로세스 점검 시작"; check_process_masquerading; }
+$run_unknown && { gen_log "[*] UNKNOWN BPF 점검 시작"; check_unknown_BPF; }
+$run_string && { gen_log "[*] 문자열 기반 이상 탐지 시작"; check_malicious_strings; }
 
 gen_log "========== 스캔 완료 =========="
 
