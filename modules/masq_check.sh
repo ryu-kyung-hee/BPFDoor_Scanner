@@ -1,34 +1,50 @@
 #!/bin/bash
 
 check_process_masquerading() {
-    echo "INFO: 위장 프로세스 확인 중"
+    gen_log "INFO: 위장 프로세스 점검 시작"
     local found_masquerade=false
-    local comm_name exe_name
+    local masquerade_output_tmp="./masquerade_process.txt"
+    echo "" > "$masquerade_output_tmp"
 
-    for pid in $(ps -eo pid --no-headers); do
-        if [ ! -d "/proc/$pid" ]; then
-            continue
-        fi
+    for pid_path in /proc/[0-9]*; do
+        [ ! -d "$pid_path" ] && continue
         
-        comm_name=$(cat "/proc/$pid/comm" 2>/dev/null)
-        exe_name=$(basename "$(readlink -f "/proc/$pid/exe")" 2>/dev/null)
+        local pid=$(basename "$pid_path")
+        local comm_file="$pid_path/comm"
+        local cmdline_file="$pid_path/cmdline"
 
-        if [[ -n "$exe_name" && "$comm_name" != "$exe_name" ]]; then
-            # exe_name이 comm_name으로 시작하는 경우, 정상적인 이름 잘림(Truncation)으로 간주하고 무시
-            if [[ "$exe_name" == "$comm_name"* ]]; then
-                # 정상적인 이름 잘림이므로, 아무것도 하지 않고 넘어감
-                :
-            else
-                echo "WARN: [의심] 프로세스명 불일치 탐지 (PID: $pid)"
-                echo " -> In-Memory Name : $comm_name"
-                echo " -> Executable File : $exe_name"
-                echo " -> Full Command    : \"$(cat /proc/$pid/cmdline | tr -d '\0')\""
-                found_masquerade=true
+        # 파일 읽기 권한 확인
+        if [[ -r "$comm_file" && -r "$cmdline_file" && -s "$cmdline_file" ]]; then
+            local comm_val=$(cat "$comm_file" 2>/dev/null)
+            local cmd_first_arg=$(tr '\0' '\n' < "$cmdline_file" | head -n 1)
+            local base_cmd=$(basename "$cmd_first_arg" 2>/dev/null)
+            local full_cmd=$(tr '\0' ' ' < "$cmdline_file" | head -c 256)
+
+            # 핵심 비교 로직
+            if [[ -n "$comm_val" && -n "$base_cmd" && "$comm_val" != "$base_cmd" ]]; then
+                # 오탐 제거 필터 (파이오링크 필터링 기준)
+                if ! [[ "$comm_val" == "["*"]" || "$base_cmd" == "["*"]" ]] &&
+                   ! ( [[ "$comm_val" == "java" && "$base_cmd" =~ ^java ]] ||
+                       [[ "$comm_val" == "python"* && "$base_cmd" =~ ^python ]] ||
+                       [[ "$comm_val" == "bash" && "$base_cmd" == "bash" ]] ||
+                       [[ "$comm_val" == "sh" && "$base_cmd" == "sh" ]] ) &&
+                   ! [[ "$base_cmd" == "$comm_val"* ]]; then
+                    
+                    # 로그 기록
+                    echo "[!] Suspected masquerading process detected:" >> "$masquerade_output_tmp"
+                    echo "  → PID: $pid" >> "$masquerade_output_tmp"
+                    found_masquerade=true
+                fi
             fi
         fi
     done
 
-if [ "$found_masquerade" = false ]; then
-    echo "INFO: 위장 프로세스가 발견되지 않음."
-fi
+    # 결과 보고
+    if [ "$found_masquerade" = true ]; then
+        gen_log "WARN: [Process Masquerading] 의심 프로세스가 발견되었습니다."
+        cat "$masquerade_output_tmp" | tee -a "$LOG_FILE"
+    else
+        gen_log "INFO: [Process Masquerading] 위장된 프로세스는 발견되지 않았습니다."
+    fi
+    echo "" >> "$LOG_FILE"
 }
