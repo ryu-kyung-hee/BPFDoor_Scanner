@@ -3,8 +3,6 @@
 check_process_masquerading() {
     gen_log "INFO: 위장 프로세스 점검 시작"
     local found_masquerade=false
-    local masquerade_output_tmp="./masquerade_process.txt"
-    echo "" > "$masquerade_output_tmp"
 
     for pid_path in /proc/[0-9]*; do
         [ ! -d "$pid_path" ] && continue
@@ -41,10 +39,8 @@ check_process_masquerading() {
 
     # 결과 보고
     if [ "$found_masquerade" = true ]; then
-        gen_log "WARN: [Process Masquerading] 의심 프로세스가 발견되었습니다."
-        cat "$masquerade_output_tmp" | tee -a "$LOG_FILE"
+        gen_log "WARN: 의심 프로세스 발견"
     else
-        gen_log "INFO: [Process Masquerading] 위장된 프로세스는 발견되지 않았습니다."
+        gen_log "INFO: 위장 프로세스 없음."
     fi
-    echo "" >> "$LOG_FILE"
 }

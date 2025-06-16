@@ -23,11 +23,15 @@ check_files_by_hash() {
     local SEARCH_PATHS=("/bin" "/sbin" "/usr/bin" "/usr/sbin" "/lib" "/usr/lib" "/etc" "/tmp" "/var/tmp" "/dev/shm" "/opt" "/home")
 
     for search_dir in "${SEARCH_PATHS[@]}"; do
-        find "$search_dir" -type f -print0 2>/dev/null | while IFS= read -r -d $'\0' file_path; do
-            [ ! -r "$file_path" ] && continue
-            current_sha256=$(sha256sum "$file_path" 2>/dev/null | awk '{print $1}')
-            [ -z "$current_sha256" ] && continue
-            for hash_val in "${!MALWARE_HASHES[@]}"; do
+        find "$search_dir" -type f -perm /111 -print0 2>/dev/null |
+	while IFS= read -r -d $'\0' file_path; do
+            
+	    if file "$file_path" 2>/dev/null | grep -q -E "ELF|SCRIPT"; then
+	    	[ ! -r "$file_path" ] && continue
+            	current_sha256=$(sha256sum "$file_path" 2>/dev/null | awk '{print $1}')
+            	[ -z "$current_sha256" ] && continue
+            
+	    for hash_val in "${!MALWARE_HASHES[@]}"; do
                 if [[ "$current_sha256" == "$hash_val" ]]; then
                     gen_log "CRITICAL: 의심 파일 발견 - ${MALWARE_HASHES[$hash_val]}"
                     gen_log "  경로: $file_path"
@@ -35,6 +39,7 @@ check_files_by_hash() {
                     found_suspicious_file=true
                 fi
             done
+            fi
         done
     done
 
