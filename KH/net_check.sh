@@ -53,7 +53,7 @@ network_ss_check() {
 
             gen_log "[WARN] ss: 의심 연결 감지 → PID=$pid | 프로세스=$pname | $laddr → $raddr"
 
-            # 🔽 해당 PID의 포트 추가 확인
+            # 해당 PID의 포트 추가 확인
             network_netstat_port_by_pid "$pid" "$pname"
         fi
     done
@@ -78,7 +78,7 @@ network_lsof_check() {
         exe_path=$(readlink -f "/proc/$pid/exe")
         gen_log "[WARN] RAW/DGRAM 사용 프로세스 감지 → PID=$pid | 프로세스=$cmd | 실행 경로=$exe_path"
 
-        # 🔽 해당 PID의 포트 추가 확인
+        # 해당 PID의 포트 추가 확인
         network_netstat_port_by_pid "$pid" "$cmd"
     done
 }
