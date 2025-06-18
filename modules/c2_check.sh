@@ -7,7 +7,6 @@ check_c2_ip_connection() {
     gen_log "INFO: C2 IP 연결 점검 시작"
     local found_c2_connection=false
 
-
     #ss 명령어 검사
     if command -v ss &>/dev/null; then
 	if ss -ntup | grep -q "$C2_IP"; then
