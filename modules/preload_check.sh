@@ -19,9 +19,29 @@ check_ld_preload() {
                                 gen_log "의심되는 환경 변수가  발견(PID: $pid)"
                                 gen_log " -> $(ps -p $pid -o user=,pid=,ppid=,cmd= --no-headers)"
 
-                                [ -n "$preload" ] && gen_log "  LD_PRELOAD: $preload"
-                                [ -n "$libpath" ] && gen_log "  LD_LIBRARY_PATH: $libpath"
-                                [ -n "$path" ] && gen_log "  PATH: $path"
+                                [ -n "$preload" ] && {
+					gen_log "  LD_PRELOAD: $preload"
+					IFS=':' read -ra items <<< "${preload#LD_PRELOAD=}"
+					for entry in "${items[@]}"; do
+						[ -n "$entry" ] && gen_log "	-> $entry"
+					done
+				}
+
+				[ -n "$libpath" ] && {
+					gen_log "  LD_LIBRARY_PATH:"
+					IFS=':' read -ra items <<<  "${libpath#LD_LIBRARY_PATH=}"
+					for entry in "${items[@]}"; do
+						[ -n "$entry" ] && gen_log "	-> $entry"
+					done
+				}
+
+				[ -n "$path" ] && {
+					gen_log "  PATH:"
+					IFS=':' read -ra items <<< "${path#PATH=}"
+					for entry in "${items[@]}"; do
+						[ -n "$entry" ] && gen_log "	-> $entry"
+					done
+				}
                         fi
                 fi
 
