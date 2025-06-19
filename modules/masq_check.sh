@@ -1,8 +1,12 @@
 #!/bin/bash
 
+# 위장 프로세스 점검 함수
 check_process_masquerading() {
     gen_log "INFO: 위장 프로세스 점검 시작"
     local found_masquerade=false
+
+    local masquerade_output_tmp="/tmp/masquerade_report.log"
+    > "$masquerade_output_tmp"  # 이전 로그 초기화
 
     for pid_path in /proc/[0-9]*; do
         [ ! -d "$pid_path" ] && continue
@@ -30,7 +34,7 @@ check_process_masquerading() {
                     
                     # 로그 기록
                     echo "[!] Suspected masquerading process detected:" >> "$masquerade_output_tmp"
-                    echo "  → PID: $pid" >> "$masquerade_output_tmp"
+                    echo "  [33m→ PID: $pid[0m, COMM: $comm_val, CMD_BASE: $base_cmd" >> "$masquerade_output_tmp"
                     found_masquerade=true
                 fi
             fi
@@ -39,7 +43,9 @@ check_process_masquerading() {
 
     # 결과 보고
     if [ "$found_masquerade" = true ]; then
-        gen_log "WARN: 의심 프로세스 발견"
+        gen_log "[31mWARN: 의심 프로세스 발견[0m"
+        gen_log "--- 검출된 위장 프로세스 목록 ---"
+        cat "$masquerade_output_tmp" | while read -r line; do gen_log "$line"; done
     else
         gen_log "INFO: 위장 프로세스 없음."
     fi
