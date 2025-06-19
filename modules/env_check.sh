@@ -15,13 +15,13 @@ check_bpfdoor_env_vars() {
                 fi
             done
             if [ "$match_all" = true ]; then
-                gen_log "WARN: 의심되는 환경 변수가 설정된 프로세스 발견 (PID: $pid)"
-                gen_log " → $(ps -p $pid -o user=,pid=,ppid=,cmd=)"
+                gen_log "${RED}WARN: 의심되는 환경 변수가 설정된 프로세스 발견 (PID: $pid)${NC}"
+                gen_log "$(ps -p $pid -o | user= | pid= | ppid= | cmd=)"
                 return 1
             fi
         fi
     done
 
-    gen_log "INFO: 의심되는 환경 변수가 설정된 프로세스 없음."
+    gen_log "${GREEN}INFO: 의심되는 환경 변수가 설정된 프로세스 없음${NC}"
     return 0
 }

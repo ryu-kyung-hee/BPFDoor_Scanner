@@ -33,9 +33,9 @@ check_files_by_hash() {
             
 	    for hash_val in "${!MALWARE_HASHES[@]}"; do
                 if [[ "$current_sha256" == "$hash_val" ]]; then
-                    gen_log "CRITICAL: 의심 파일 발견 - ${MALWARE_HASHES[$hash_val]}"
-                    gen_log "  경로: $file_path"
-                    gen_log "  SHA256: $current_sha256"
+                    gen_log "${RED}WARN: 의심 파일 발견: ${MALWARE_HASHES[$hash_val]}${NC}"
+                    gen_log "경로: $file_path"
+                    gen_log "SHA256: $current_sha256"
                     found_suspicious_file=true
                 fi
             done
@@ -44,6 +44,6 @@ check_files_by_hash() {
     done
 
     if [ "$found_suspicious_file" = false ]; then
-        gen_log "INFO: 악성 해시와 일치하는 파일 없음."
+        gen_log "${GREEN}INFO: 악성 해시와 일치하는 파일 없음.${NC}"
     fi
 }

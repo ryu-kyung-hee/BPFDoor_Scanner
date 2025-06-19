@@ -19,7 +19,7 @@ check_c2_ip_connection() {
                 	local pid=$(echo "$line" | grep -oP 'pid=\K[0-9]+' | sort -u)
                 	local cmd=$(echo "$line" | grep -oP 'users:\(\("\K[^"]+' | sort -u)
 
-                	gen_log "WARN: C2 IP ($C2_IP) 주소에 대한 네트워크 연결 발견" 
+                	gen_log "${RED}WARN: C2 IP ($C2_IP) 주소에 대한 네트워크 연결 발견${NC}" 
                 	gen_log "$proto: $local_addr → $remote_addr (PID: ${pid:-N/A}, CMD: ${cmd:-N/A})"
                done
     	fi
@@ -33,11 +33,11 @@ check_c2_ip_connection() {
                 done
 	fi
     else
-        gen_log "WARN: 'ss'와 'netstat' 명령어가 존재하지 않음"
+        gen_log "INFO: 'ss'와 'netstat' 명령어가 존재하지 않음"
     fi
 
 
     if [ "$found_c2_connection" = false ]; then
-        gen_log "INFO: 연결된 C2 IP 없음"
+        gen_log "${GREEN}INFO: 연결된 C2 IP 없음${NC}"
     fi
 }
