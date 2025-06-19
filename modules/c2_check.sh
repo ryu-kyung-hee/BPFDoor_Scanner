@@ -3,7 +3,7 @@
 #필요시 변경. 현재 가상환경 공격자 IP로 설정
 C2_IP="192.168.100.3"
 
-check_c2_ip_connection() { 
+check_c2_ip_connection() {  
     gen_log "INFO: C2 IP 연결 점검 시작"
     local found_c2_connection=false
 
