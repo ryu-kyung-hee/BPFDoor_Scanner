@@ -27,7 +27,7 @@ check_c2_ip_connection() {
     elif command -v netstat &>/dev/null; then
 	if netstat -ntup 2>/dev/null | grep "$C2_IP"; then
 		found_c2_connection=true
-		netstat -ntup 2>/dev/null | grep "$C2_IP" | while -r line; do
+		netstat -ntup 2>/dev/null | grep "$C2_IP" | while read -r line; do
             		gen_log " netstat: $line"
                 done
 	fi
