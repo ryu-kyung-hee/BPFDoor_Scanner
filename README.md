@@ -8,22 +8,28 @@ $chmod +x main.sh
 필요 시 ./main.sh --@ 값을 부여해 개별로 실행할 수 있습니다.
 
 env_check.sh --env
+
 HOME=/tmp, HISTFILE=/dev/null, MYSQL_HISTFILE=/dev/null 으로 설정된 환경변수가 있는지 확인합니다.
 
 hash_check.sh --hash
+
 KISA 기준 주요 경로에서 파일 해시 검사를 진행합니다.
 해시값은 현재 발표된 A 유형 기준이며, 추후 추가할 예정입니다.
 
 proc_check.sh --proc
+
 KISA 기준 주요 경로에서 의심되는 프로세스와 파일 이름을 확인합니다.
 
 net_check.sh --net
 
 masq_check.sh --masq
+
 프로세스 이름과 실행 경로가 일치하지 않는 위장 프로세스를 확인합니다.
 
 c2_check.sh --ip
+
 현재 KISA에서 공개된 C2 IP는 165.232.174.130 로, 이 IP의 흔적이 있는지 확인합니다.
 
 preload_check.sh --preload
+
 LD_PRELOAD 환경변수 및 /etc/ld.so.preload 설정 여부를 통해 후킹 시도를 확인합니다.
