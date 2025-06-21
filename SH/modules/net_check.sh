@@ -135,4 +135,3 @@ check_network_sockets() {
     network_lsof_check
     network_netstat_check
 }
-

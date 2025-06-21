@@ -1,15 +1,6 @@
 #!/bin/bash
 
-SUSPICIOUS_NAMES_PATHS=(
-    "hpasmmld"
-    "smartadm"
-    "hald-addon-volume"
-    "dbus-srv"
-    "gm"
-    "rad$"
-    "/dev/shm/."
-    "/tmp/."
-)
+source "$SCRIPT_DIR/db/pattern_db.sh"
 
 check_suspicious_processes_and_files() {
     gen_log "[INFO] 의심 프로세스 및 파일, 디렉토리 검사 시작"
