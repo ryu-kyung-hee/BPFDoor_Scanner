@@ -52,7 +52,7 @@ network_netstat_check() {
         pid_field=$(echo "$pid_info" | cut -d'/' -f1 | xargs)
         pname_field=$(echo "$pid_info" | cut -d'/' -f2- | xargs)
 
-        gen_log "$(printf "[PORT] PID=%-5s | 프로세스=%-20s | 프로토콜=%-5s | 포트=%-20s → %-20s\n" \
+        gen_log "$(printf "[PORT] PID=%-7s | 프로세스=%-20s | 프로토콜=%-5s | 포트=%-20s → %-20s\n" \
             "$pid_field" "$pname_field" "$proto" "$laddr" "$raddr")"
     done
 }
@@ -88,7 +88,7 @@ network_ss_check() {
             laddr=${laddr:-0}
             raddr=${raddr:-0}
 
-            gen_log "$(printf ${RED}[WARN]${NC}" ss: 의심 연결 감지 → PID=%-16s | 프로세스=%-15s " \
+            gen_log "$(printf ${RED}[WARN]${NC}" ss: 의심 연결 감지 → PID=%-18s | 프로세스=%-15s " \
                 "$pid" "$pname")"
 
 
@@ -118,7 +118,7 @@ network_lsof_check() {
 
         exe_path=$(readlink -f "/proc/$pid/exe")
 
-        gen_log "$(printf ${RED}[WARN]${NC}" RAW/DGRAM 사용 프로세스 감지 → PID=%-6s | 프로세스=%-15s | 실행 경로=%-15s\n" \
+        gen_log "$(printf ${RED}[WARN]${NC}" RAW/DGRAM 사용 프로세스 감지 → PID=%-8s | 프로세스=%-15s | 실행 경로=%-15s\n" \
                 "$pid" "$cmd" "$exe_path")"
 
 
