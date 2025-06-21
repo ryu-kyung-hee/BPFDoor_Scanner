@@ -14,7 +14,6 @@ check_ld_preload() {
             local preload libpath path
             preload=$(echo "$env_data" | grep '^LD_PRELOAD=')
             libpath=$(echo "$env_data" | grep '^LD_LIBRARY_PATH=')
-            path=$(echo "$env_data" | grep '^PATH=')
 
         if echo "$preload$libpath" | grep -q "/snap"; then
 		continue
