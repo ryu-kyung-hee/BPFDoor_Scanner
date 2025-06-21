@@ -28,7 +28,7 @@ network_netstat_check() {
 
         # INFO 로그는 딱 한 번만 출력
         if [[ "$found" == false ]]; then
-            gen_log "[INFO] netstat 기반 소켓 검사 시작"
+            gen_log "[INFO] netstat PID/PORT 확인"
             found=true
         fi
 
