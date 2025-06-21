@@ -30,6 +30,8 @@ check_files_by_hash() {
     done
 
     if [ "$found_suspicious_file" = false ]; then
+        gen_log "${RED}[WARN]${NC} 악성 해시와 일치하는 파일 있음."
+    else
         gen_log "${GREEN}[INFO]${NC} 악성 해시와 일치하는 파일 없음."
     fi
 }

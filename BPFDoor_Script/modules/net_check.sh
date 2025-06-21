@@ -1,8 +1,7 @@
 #!/bin/bash
 
-
 gen_log() {
-local msg="$1"
+    local msg="$1"
     local color="${2:-$NC}"  # 기본색
     local timestamp="[$(date +'%Y-%m-%d %H:%M:%S')]"
 
@@ -15,7 +14,6 @@ local msg="$1"
 # netstat 기반으로 해당 PID가 열고 있는 포트 확인
 network_netstat_check() {
     local pid=$1
-
     local found=false
 
     sudo netstat -nap 2>/dev/null \
@@ -26,7 +24,6 @@ network_netstat_check() {
     | grep -v "NetworkManager" | grep -v "dhclient" \
     | while read -r line; do
 
-        # INFO 로그는 딱 한 번만 출력
         if [[ "$found" == false ]]; then
             gen_log "[INFO] netstat PID/PORT 확인"
             found=true
@@ -63,20 +60,15 @@ network_ss_check() {
 
     sudo ss -0pb | awk '
     {
-        # 첫 번째 줄 처리: "NetworkManager"가 포함되면 건너뜀, 공백 줄도 건너뜀
         if ($0 ~ /NetworkManager/) next
         if ($0 ~ /^[ \t]*$/) next
         line1 = $0
-
-        # 두 번째 줄 처리: BPF 필터가 있는 경우 두 번째 줄을 가져와서 출력
         getline
         if ($0 ~ /NetworkManager/) next
         if ($0 ~ /^[ \t]*$/) next
         line2 = $0
-
         print line1, line2
     }' | while read -r line; do
-        # 특정 문자열이 포함된 줄만 출력
         if echo "$line" | grep -qE '21139|29269|36204|40783|0x5293|0x7255|0x39393939|0x8D6C|0x9F4F|5353|262144'; then
             laddr=$(echo "$line" | awk '{print $5}')
             raddr=$(echo "$line" | awk '{print $6}')
@@ -88,13 +80,9 @@ network_ss_check() {
             laddr=${laddr:-0}
             raddr=${raddr:-0}
 
-            gen_log "$(printf ${RED}[WARN]${NC}" ss: 의심 연결 감지 → PID=%-18s | 프로세스=%-15s " \
-                "$pid" "$pname")"
+            gen_log "$(printf ${RED}[WARN]${NC}" ss: 의심 연결 감지 → PID=%-18s | 프로세스=%-15s " "$pid" "$pname")"
+            network_ss_warn=true
 
-
-#            gen_log "[WARN] ss: 의심 연결 감지 → PID=$pid | 프로세스=$pname "
-
-            # 해당 PID의 포트 추가 확인
             network_netstat_check "$pid"
         fi
     done
@@ -120,18 +108,25 @@ network_lsof_check() {
 
         gen_log "$(printf ${RED}[WARN]${NC}" RAW/DGRAM 사용 프로세스 감지 → PID=%-8s | 프로세스=%-15s | 실행 경로=%-15s\n" \
                 "$pid" "$cmd" "$exe_path")"
+        network_lsof_warn=true
 
-
-#       gen_log "[WARN] RAW/DGRAM 사용 프로세스 감지 → PID=$pid | 프로세스=$cmd | 실행 경로=$exe_path"
-
-        # 해당 PID의 포트 추가 확인
         network_netstat_check "$pid"
     done
 }
 
 # 통합 네트워크 점검 실행
 check_network_sockets() {
+    network_ss_warn=false
+    network_lsof_warn=false
+    network_netstat_warn=false
+
     network_ss_check
     network_lsof_check
     network_netstat_check
+
+    if $network_ss_warn || $network_lsof_warn; then
+        gen_log "${RED}[WARN]${NC} 의심 연결 또는 프로세스 발견됨"
+    else
+        gen_log "${GREEN}[INFO]${NC} BPFdoor 의심 정황 없음"
+    fi
 }

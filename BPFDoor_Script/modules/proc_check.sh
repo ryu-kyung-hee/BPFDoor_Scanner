@@ -29,7 +29,9 @@ check_suspicious_processes_and_files() {
         done
     done
 
-    if [ "$found_suspicious_item" = false ]; then
-        gen_log "${GREEN}[INFO]${NC} 의심 프로세스 및 파일 없음"
+    if [ "$found_suspicious_item" = true ]; then
+	gen_log "${RED}[WARN]${NC} 의심 프로세스 발견"
+    else
+	gen_log "${GREEN}[INFO]${NC} 의심 프로세스 및 파일 없음"
     fi
 }
