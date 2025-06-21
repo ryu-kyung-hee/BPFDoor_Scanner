@@ -93,7 +93,7 @@ $run_c2 && { gen_log "${MAGENTA}[*] 공격자 IP 점검 시작${NC}"; check_c2_i
 $run_preload && { gen_log "${MAGENTA}[*] LD_PRELOAD 점검 시작${NC}"; check_ld_preload; }
 $run_hash && { gen_log "${MAGENTA}[*] 파일 해시 점검 시작${NC}"; check_files_by_hash; }
 $run_proc && { gen_log "${MAGENTA}[*] 의심 프로세스 점검 시작${NC}"; check_suspicious_processes_and_files; }
-$run_net && { gen_log "${MAGENTA}[*] 네트워크 점검 시작${NC}"; check_network_sockets; }
+$run_net && { gen_log "${MAGENTA}[*] 네트워크 점검 시작${NC}"; run_network_check; }
 $run_masq && { gen_log "${MAGENTA}[*] 위장 프로세스 점검 시작${NC}"; check_process_masquerading; }
 
 
