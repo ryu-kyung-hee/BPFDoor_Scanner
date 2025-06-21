@@ -1,7 +1,7 @@
 #!/bin/bash
 
 check_ld_preload() {
-    gen_log "[INFO] [LD_PRELOAD] LD_PRELOAD 탐지 시작"
+    gen_log "[INFO] LD_PRELOAD 탐지 시작"
 
     local found=false
 
