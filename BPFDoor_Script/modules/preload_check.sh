@@ -16,6 +16,10 @@ check_ld_preload() {
             libpath=$(echo "$env_data" | grep '^LD_LIBRARY_PATH=')
             path=$(echo "$env_data" | grep '^PATH=')
 
+        if echo "$preload$libpath" | grep -q "/snap"; then
+		continue
+	    fi
+     
             if [[ -n "$preload" || -n "$libpath" ]]; then
                 found=true
                 gen_log "${YELLOW}의심되는 환경 변수가 발견됨 (PID: $pid)${NC}"
@@ -35,14 +39,6 @@ check_ld_preload() {
                 if [ -n "$libpath" ]; then
                     gen_log "${YELLOW}LD_LIBRARY_PATH:${NC}"
                     IFS=':' read -ra entries <<< "${libpath#LD_LIBRARY_PATH=}"
-                    for e in "${entries[@]}"; do
-                        [ -n "$e" ] && gen_log "$e"
-                    done
-                fi
-
-                if [ -n "$path" ]; then
-                    gen_log "${YELLOW}PATH:${NC}"
-                    IFS=':' read -ra entries <<< "${path#PATH=}"
                     for e in "${entries[@]}"; do
                         [ -n "$e" ] && gen_log "$e"
                     done
