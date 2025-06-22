@@ -7,11 +7,11 @@ $chmod +x main.sh
 2. 각 모듈에 대한 설명입니다.
 필요 시 ./main.sh --@ 값을 부여해 개별로 실행할 수 있습니다.
 
-env_check.sh --env
+  + env_check.sh --env
 
 HOME=/tmp, HISTFILE=/dev/null, MYSQL_HISTFILE=/dev/null 으로 설정된 환경변수가 있는지 확인합니다.
 
-hash_check.sh --hash
+  + hash_check.sh --hash
 
 KISA 기준 주요 경로에서 파일 해시 검사를 진행합니다.
 해시값은 현재 발표된 A 유형 기준이며, 추후 추가할 예정입니다.
