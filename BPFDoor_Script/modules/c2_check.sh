@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #필요시 변경. 현재 가상환경 공격자 IP로 설정
-C2_IP="192.168.100.3"
+source "$SCRIPT_DIR/db/c2_IP.txt"
 
 check_c2_ip_connection() {
     gen_log "[INFO} C2 IP 연결 점검 시작"

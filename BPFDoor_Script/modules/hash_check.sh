@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$SCRIPT_DIR/db/hash.db"
+source "$SCRIPT_DIR/db/hash.txt"
 
 
 check_files_by_hash() {

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$SCRIPT_DIR/db/pattern.db"
+source "$SCRIPT_DIR/db/pattern.txt"
 
 check_suspicious_processes_and_files() {
     gen_log "[INFO] 의심 프로세스 및 파일, 디렉토리 검사 시작"
