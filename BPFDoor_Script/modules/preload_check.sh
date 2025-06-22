@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 check_ld_preload() {
     gen_log "[INFO] LD_PRELOAD 탐지 시작"
@@ -11,10 +11,9 @@ check_ld_preload() {
             local env_data
             env_data=$(tr '\0' '\n' < "$env_file" 2>/dev/null)
 
-            local preload libpath path
+            local preload libpath
             preload=$(echo "$env_data" | grep '^LD_PRELOAD=')
             libpath=$(echo "$env_data" | grep '^LD_LIBRARY_PATH=')
-            path=$(echo "$env_data" | grep '^PATH=')
 
         if echo "$preload$libpath" | grep -q "/snap"; then
 		continue
