@@ -16,7 +16,7 @@ main.sh 및 모듈 권한부여합니다.
 | net_check.sh | `--net` | 네트워크 검사를 [ss, lsof, netstat] 해당 명령을 통해 확인합니다. |
 | masq_check.sh | `--masq` | 프로세스 이름과 실행 경로가 일치하지 않는 위장 프로세스를 확인합니다. |
 | c2_check.sh | `--ip` | 공개된 C2 IP를 기반으로 확인합니다. |
-| preload_check.sh | `--preload&nbsp;&nbsp;` | LD_PRELOAD 환경변수 및 /etc/ld.so.preload 설정 여부를 통해 후킹 시도를 확인합니다. |
+| preload_check.sh | `--preload`&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | LD_PRELOAD 환경변수 및 /etc/ld.so.preload 설정 여부를 통해 후킹 시도를 확인합니다. |
 <br>
 
 # Error
